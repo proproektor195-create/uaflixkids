@@ -34,7 +34,12 @@ class UAFlixProvider(
     private val subtitleRegex = "subtitle\\s*:\\s*['\"]([^'\"]*)['\"]".toRegex()
 
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
-        if (request.data == YOUTUBE_REQUEST) return youtubeCatalog.home(request)
+        if (request.data == YOUTUBE_REQUEST) {
+    return youtubeCatalog.home(
+        api = this,
+        request = request
+    )
+}
         val baseUrl = request.data.replace("/page/", "/")
         val postBody = FormBody.Builder()
             .add("xf_sort", "get").add("xf_field", "default").add("xf_value", "date").build()
@@ -60,7 +65,13 @@ class UAFlixProvider(
             .document.select(".sres-wrap").map { it.toSearchResponse() }
 
     override suspend fun load(url: String): LoadResponse {
-        if (url.startsWith(YOUTUBE_VIDEO_PREFIX)) return youtubeCatalog.load(url)
+        if (url.startsWith(YOUTUBE_VIDEO_PREFIX)) {
+    return youtubeCatalog.load(
+        api = this,
+        url = url
+    )
+}
+
         val document = app.get(url).document
         val title = document.select(".fright h1").text().trim().replace("дивитись онлайн", "")
         val poster = fixUrl(document.select(".img-box img").attr("data-src").ifBlank { document.select(".img-box img").attr("src") })
