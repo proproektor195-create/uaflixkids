@@ -1,16 +1,14 @@
 package com.lagradost
 
 import com.lagradost.cloudstream3.utils.ExtractorLink
+import com.lagradost.cloudstream3.utils.ExtractorLinkType
 import com.lagradost.cloudstream3.utils.Qualities
+import com.lagradost.cloudstream3.utils.newExtractorLink
 import org.schabi.newpipe.extractor.ServiceList
 import org.schabi.newpipe.extractor.stream.StreamInfo
 
 object YouTubeStreamExtractor {
 
-    /**
-     * Отримує muxed-потоки YouTube, де відео та звук уже об'єднані,
-     * і передає їх у вбудований плеєр CloudStream.
-     */
     suspend fun load(
         videoId: String,
         callback: (ExtractorLink) -> Unit
@@ -27,36 +25,36 @@ object YouTubeStreamExtractor {
             val info = StreamInfo.getInfo(extractor)
             var linksAdded = 0
 
-            // videoStreams у NewPipeExtractor є muxed-потоками:
-            // відео та звук містяться в одному файлі.
             info.videoStreams
                 .asSequence()
-                .filter { stream -> stream.isUrl }
-                .filter { stream -> !stream.url.isNullOrBlank() }
-                .distinctBy { stream -> stream.url }
-                .sortedByDescending { stream -> stream.height }
-                .forEach { stream ->
-                    val streamUrl = stream.url ?: return@forEach
+                .mapNotNull { stream ->
+                    val streamUrl = stream.url ?: return@mapNotNull null
+                    if (!stream.isUrl || streamUrl.isBlank()) return@mapNotNull null
+                    stream to streamUrl
+                }
+                .distinctBy { (_, streamUrl) -> streamUrl }
+                .sortedByDescending { (stream, _) -> stream.height }
+                .forEach { (stream, streamUrl) ->
                     val quality = qualityFromHeight(stream.height)
                     val label = stream.resolution
                         ?.takeIf { it.isNotBlank() }
                         ?: if (stream.height > 0) "${stream.height}p" else "YouTube"
 
-                    callback(
-                        ExtractorLink(
-                            source = "YouTube",
-                            name = "YouTube $label",
-                            url = streamUrl,
-                            referer = "https://www.youtube.com/",
-                            quality = quality,
-                            isM3u8 = false,
-                            headers = mapOf(
-                                "User-Agent" to USER_AGENT,
-                                "Referer" to "https://www.youtube.com/"
-                            )
+                    val link = newExtractorLink(
+                        source = "YouTube",
+                        name = "YouTube $label",
+                        url = streamUrl,
+                        type = ExtractorLinkType.VIDEO
+                    ) {
+                        referer = "https://www.youtube.com/"
+                        this.quality = quality
+                        headers = mapOf(
+                            "User-Agent" to USER_AGENT,
+                            "Referer" to "https://www.youtube.com/"
                         )
-                    )
+                    }
 
+                    callback(link)
                     linksAdded++
                 }
 
