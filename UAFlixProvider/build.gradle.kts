@@ -1,5 +1,4 @@
-// use an integer for version numbers
-version = 24
+version = 25
 
 dependencies {
     implementation(libs.gson)
@@ -10,25 +9,22 @@ dependencies {
 
 cloudstream {
     language = "uk"
-    // All of these properties are optional, you can safely remove them
 
-    description = "UAFLIX - фільми і серіали NETFLIX українською"
-    authors = listOf("CakesTwix")
+    description =
+        "UAFlix Kids: мультфільми, мультсеріали та вибрані YouTube-канали"
 
-    /**
-     * Status int as the following:
-     * 0: Down
-     * 1: Ok
-     * 2: Slow
-     * 3: Beta only
-     * */
-    status = 1 // will be 3 if unspecified
-    tvTypes = listOf(
-        "Anime",
-        "Cartoon",
-        "Movie",
-        "TvSeries",
+    authors = listOf(
+        "proproektor195-create"
     )
 
-    iconUrl = "https://www.google.com/s2/favicons?domain=uafix.net&sz=%size%"
+    status = 1
+
+    tvTypes = listOf(
+        "Cartoon",
+        "Movie",
+        "TvSeries"
+    )
+
+    iconUrl =
+        "https://www.google.com/s2/favicons?domain=uafix.net&sz=%size%"
 }
