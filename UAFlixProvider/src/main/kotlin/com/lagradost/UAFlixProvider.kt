@@ -44,21 +44,31 @@ class UAFlixProvider : MainAPI() {
     override val hasQuickSearch = true
     override val hasDownloadSupport = true
     override val supportedTypes = setOf(
-        TvType.TvSeries,
-        TvType.Cartoon,
-        TvType.Movie,
-        TvType.Anime
-    )
+    TvType.Cartoon,
+    TvType.TvSeries,
+    TvType.Movie
+)
+
 
     // Sections
     override val mainPage = mainPageOf(
-        mainPage("$mainUrl/film/page/", "Фільми", horizontalImages = true),
-        mainPage("$mainUrl/serials/page/", "Серіали", horizontalImages = true),
-        mainPage("$mainUrl/dorama/page/", "Дорами", horizontalImages = true),
-        mainPage("$mainUrl/cartoons/page/", "Мультфільми", horizontalImages = true),
-        mainPage("$mainUrl/serials/multseial/page/", "Мультсеріали", horizontalImages = true),
-        mainPage("$mainUrl/anime/page/", "Аніме", horizontalImages = true),
+    mainPage(
+        "$mainUrl/cartoons/page/",
+        "Мультфільми",
+        horizontalImages = true
+    ),
+    mainPage(
+        "$mainUrl/serials/multseial/page/",
+        "Мультсеріали",
+        horizontalImages = true
+    ),
+    mainPage(
+        YOUTUBE_REQUEST,
+        "YouTube",
+        horizontalImages = true
     )
+)
+
 
     // Main Page
     private val animeSelector = ".video-item"
