@@ -351,20 +351,19 @@ class UAFlixProvider(
     ): Boolean {
 
         if (data.startsWith(YOUTUBE_PLAY_PREFIX)) {
-            val videoId = data
-                .removePrefix(YOUTUBE_PLAY_PREFIX)
-                .trim()
+    val videoId = data
+        .removePrefix(YOUTUBE_PLAY_PREFIX)
+        .trim()
 
-            if (videoId.isBlank()) {
-                return false
-            }
+    if (videoId.isBlank()) {
+        return false
+    }
 
-            return loadExtractor(
-                "https://youtube.com/watch?v=$videoId",
-                subtitleCallback,
-                callback
-            )
-        }
+    return YouTubeStreamExtractor.load(
+        videoId = videoId,
+        callback = callback
+    )
+}
 
         val parts = data.split(", ")
 
