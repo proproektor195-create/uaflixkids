@@ -11,13 +11,18 @@ import com.lagradost.cloudstream3.TvType
 import com.lagradost.cloudstream3.app
 import com.lagradost.cloudstream3.newEpisode
 import com.lagradost.cloudstream3.newHomePageResponse
-import com.lagradost.cloudstream3.newTvSeriesSearchResponse
 import com.lagradost.cloudstream3.newTvSeriesLoadResponse
+import com.lagradost.cloudstream3.newTvSeriesSearchResponse
 import java.net.URLEncoder
 
-const val YOUTUBE_REQUEST = "uaflixkids://youtube"
-const val YOUTUBE_SOURCE_PREFIX = "uaflixkids://youtube/source/"
-const val YOUTUBE_PLAY_PREFIX = "uaflixkids://youtube/play/"
+const val YOUTUBE_REQUEST =
+    "https://uafix.net/__uaflixkids_youtube_v2__"
+
+const val YOUTUBE_SOURCE_PREFIX =
+    "https://uafix.net/__uaflixkids_youtube_v2__/source/"
+
+const val YOUTUBE_PLAY_PREFIX =
+    "https://uafix.net/__uaflixkids_youtube_v2__/play/"
 
 data class YouTubeSource(
     val title: String,
@@ -120,7 +125,11 @@ class YouTubeCatalog(
                 ?.takeIf { it.isNotBlank() }
                 ?: "https://i.ytimg.com/vi/$videoId/hqdefault.jpg"
 
-            YouTubeVideo(videoId, title, thumbnail)
+            YouTubeVideo(
+                id = videoId,
+                title = title,
+                thumbnail = thumbnail
+            )
         }.distinctBy { it.id }
     }
 
@@ -140,17 +149,16 @@ class YouTubeCatalog(
                 loadFeed(source).firstOrNull()?.thumbnail
             }.getOrNull()
 
-            return with(api) {
-    newTvSeriesLoadResponse(
-        source.title,
-        url,
-        TvType.TvSeries,
-        episodes
-    ) {
-        posterUrl = videos.firstOrNull()?.thumbnail
-    }
-}
-
+            with(api) {
+                newTvSeriesSearchResponse(
+                    source.title,
+                    "$YOUTUBE_SOURCE_PREFIX$index",
+                    TvType.TvSeries
+                ) {
+                    posterUrl = poster
+                }
+            }
+        }
 
         return newHomePageResponse(
             request,
@@ -163,30 +171,29 @@ class YouTubeCatalog(
         api: MainAPI,
         url: String
     ): LoadResponse {
-        val index = url.removePrefix(YOUTUBE_SOURCE_PREFIX).toIntOrNull()
+        val index = url
+            .removePrefix(YOUTUBE_SOURCE_PREFIX)
+            .toIntOrNull()
             ?: throw IllegalArgumentException("Неправильний індекс YouTube-каналу")
 
         val source = YouTubeSettingsStore.read(context).getOrNull(index)
             ?: throw IllegalArgumentException("YouTube-канал не знайдено")
 
         val videos = loadFeed(source)
-        val episodes: List<Episode> =
-    videos.mapIndexed { position, video ->
 
-        with(api) {
-            newEpisode(
-                url = "$YOUTUBE_PLAY_PREFIX${video.id}",
-                initializer = {
-                    name = video.title
-                    episode = position + 1
-                    posterUrl = video.thumbnail
-                },
-                fix = false
-            )
+        val episodes: List<Episode> = videos.mapIndexed { position, video ->
+            with(api) {
+                newEpisode(
+                    url = "$YOUTUBE_PLAY_PREFIX${video.id}",
+                    initializer = {
+                        name = video.title
+                        episode = position + 1
+                        posterUrl = video.thumbnail
+                    },
+                    fix = true
+                )
+            }
         }
-    }
-
-
 
         return with(api) {
             newTvSeriesLoadResponse(
@@ -196,7 +203,6 @@ class YouTubeCatalog(
                 episodes
             ) {
                 posterUrl = videos.firstOrNull()?.thumbnail
-                plot = "Відео з YouTube-каналу ${source.title}"
             }
         }
     }
