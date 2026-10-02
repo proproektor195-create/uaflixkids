@@ -11,7 +11,7 @@ import com.lagradost.cloudstream3.TvType
 import com.lagradost.cloudstream3.app
 import com.lagradost.cloudstream3.newEpisode
 import com.lagradost.cloudstream3.newHomePageResponse
-import com.lagradost.cloudstream3.newMovieSearchResponse
+import com.lagradost.cloudstream3.newTvSeriesSearchResponse
 import com.lagradost.cloudstream3.newTvSeriesLoadResponse
 import java.net.URLEncoder
 
@@ -141,7 +141,7 @@ class YouTubeCatalog(
             }.getOrNull()
 
             with(api) {
-                newMovieSearchResponse(
+                newTvSeriesSearchResponse(
                     source.title,
                     "$YOUTUBE_SOURCE_PREFIX$index",
                     TvType.TvSeries
