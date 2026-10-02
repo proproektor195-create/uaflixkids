@@ -7,18 +7,35 @@ on:
       - main
       - kids
 
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: "17"
           distribution: temurin
+          cache: gradle
 
-      - run: chmod +x gradlew
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
 
-      - run: ./gradlew clean test UAFlixProvider:make makePluginsJson
+      - name: Make Gradle executable
+        run: chmod +x gradlew
+
+      - name: Build UAFlix Kids
+        run: |
+          ./gradlew clean
+          ./gradlew test
+          ./gradlew UAFlixProvider:make
+          ./gradlew makePluginsJson
