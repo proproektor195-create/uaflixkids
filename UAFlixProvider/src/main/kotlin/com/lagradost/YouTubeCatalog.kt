@@ -177,15 +177,17 @@ newTvSeriesSearchResponse(
 
         with(api) {
             newEpisode(
-                "$YOUTUBE_PLAY_PREFIX${video.id}",
+                url = "$YOUTUBE_PLAY_PREFIX${video.id}",
+                initializer = {
+                    name = video.title
+                    episode = position + 1
+                    posterUrl = video.thumbnail
+                },
                 fix = false
-            ) {
-                name = video.title
-                episode = position + 1
-                posterUrl = video.thumbnail
-            }
+            )
         }
     }
+
 
 
         return with(api) {
