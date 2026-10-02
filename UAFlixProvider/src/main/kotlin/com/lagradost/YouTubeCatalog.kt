@@ -140,19 +140,17 @@ class YouTubeCatalog(
                 loadFeed(source).firstOrNull()?.thumbnail
             }.getOrNull()
 
-            with(api) {
-newTvSeriesSearchResponse(
-    source.title,
-    "$YOUTUBE_SOURCE_PREFIX$index",
-    TvType.TvSeries,
-    fix = false
-) {
-    posterUrl = poster
+            return with(api) {
+    newTvSeriesLoadResponse(
+        source.title,
+        url,
+        TvType.TvSeries,
+        episodes
+    ) {
+        posterUrl = videos.firstOrNull()?.thumbnail
+    }
 }
 
-
-            }
-        }
 
         return newHomePageResponse(
             request,
