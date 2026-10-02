@@ -32,10 +32,11 @@ object YouTubeStreamExtractor {
             info.videoStreams
                 .asSequence()
                 .filter { stream -> stream.isUrl }
-                .filter { stream -> stream.url.isNotBlank() }
+                .filter { stream -> !stream.url.isNullOrBlank() }
                 .distinctBy { stream -> stream.url }
                 .sortedByDescending { stream -> stream.height }
                 .forEach { stream ->
+                    val streamUrl = stream.url ?: return@forEach
                     val quality = qualityFromHeight(stream.height)
                     val label = stream.resolution
                         ?.takeIf { it.isNotBlank() }
@@ -45,7 +46,7 @@ object YouTubeStreamExtractor {
                         ExtractorLink(
                             source = "YouTube",
                             name = "YouTube $label",
-                            url = stream.url,
+                            url = streamUrl,
                             referer = "https://www.youtube.com/",
                             quality = quality,
                             isM3u8 = false,
