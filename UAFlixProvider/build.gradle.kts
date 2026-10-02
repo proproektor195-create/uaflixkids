@@ -1,4 +1,4 @@
-version = 27
+version = 28
 
 dependencies {
     implementation(libs.gson)
