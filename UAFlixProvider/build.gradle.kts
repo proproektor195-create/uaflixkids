@@ -1,7 +1,11 @@
-version = 28
+version = 29
 
 dependencies {
     implementation(libs.gson)
+
+    implementation(
+        "com.github.teamnewpipe:NewPipeExtractor:v0.25.2"
+    )
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
