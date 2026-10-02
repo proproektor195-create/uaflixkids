@@ -164,10 +164,12 @@ class YouTubeCatalog(
 
         val videos = loadFeed(source)
         val episodes: List<Episode> = videos.mapIndexed { position, video ->
-            newEpisode("$YOUTUBE_PLAY_PREFIX${video.id}") {
-                name = video.title
-                episode = position + 1
-                posterUrl = video.thumbnail
+            with(api) {
+                newEpisode("$YOUTUBE_PLAY_PREFIX${video.id}") {
+                    name = video.title
+                    episode = position + 1
+                    posterUrl = video.thumbnail
+                }
             }
         }
 
