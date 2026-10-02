@@ -31,7 +31,8 @@ subprojects {
         // setRepo(System.getenv("GITHUB_REPOSITORY") ?: "https://github.com/CakesTwix/cloudstream-extensions-uk")
         //setRepo("CakesTwix", "cloudstream-extensions-uk", "gitea-codeberg.org")
         setRepo(System.getenv("GITHUB_REPOSITORY") ?: "https://github.com/CakesTwix/cloudstream-extensions-uk")
-        authors = listOf("CakesTwix")
+        authors = listOf("proproektor195-create")
+
     }
 
     android {
