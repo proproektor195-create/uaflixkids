@@ -1,24 +1,28 @@
-name: Build
+name: Build and Publish
 
 on:
   push:
     branches:
-      - master
-      - main
       - kids
 
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: uaflixkids-release
+  cancel-in-progress: true
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
-      - name: Checkout
+      - name: Checkout source
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup JDK 17
         uses: actions/setup-java@v4
@@ -46,3 +50,43 @@ jobs:
           ./gradlew test
           ./gradlew UAFlixProvider:make
           ./gradlew makePluginsJson
+
+      - name: Prepare release files
+        run: |
+          rm -rf release-output
+          mkdir -p release-output
+
+          find UAFlixProvider/build \
+            -type f \
+            -name "*.cs3" \
+            -exec cp {} release-output/ \;
+
+          cp build/plugins.json release-output/plugins.json
+          cp repo.json release-output/repo.json
+
+          echo "Release files:"
+          ls -la release-output
+
+          test -f release-output/plugins.json
+          test -f release-output/repo.json
+          test -n "$(find release-output -name '*.cs3' -print -quit)"
+
+      - name: Publish builds branch
+        run: |
+          cd release-output
+
+          git init
+          git checkout -b builds
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add .
+          git commit -m "UAFlix Kids build $GITHUB_SHA"
+
+          git remote add origin \
+            "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          git push --force origin builds
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
