@@ -65,7 +65,8 @@ class UAFlixProvider(
         if (request.data == YOUTUBE_REQUEST) {
             return youtubeCatalog.home(
                 api = this,
-                request = request
+                request = request,
+                page = page
             )
         }
 
