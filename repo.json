@@ -1,0 +1,8 @@
+{
+  "name": "UAFlix Kids",
+  "description": "Мультфільми, мультсеріали та вибрані YouTube-канали українською",
+  "manifestVersion": 1,
+  "pluginLists": [
+    "https://raw.githubusercontent.com/proproektor195-create/uaflixkids/refs/heads/builds/plugins.json"
+  ]
+}

@@ -1,0 +1,24 @@
+[
+    {
+        "iconUrl": "https://www.google.com/s2/favicons?domain=uafix.net&sz=%size%",
+        "fileHash": "sha256-bdc9c7289405385e74157b61641f67b76b0b4b7f34cc74191e92d5533fe1c1e2",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/proproektor195-create/uaflixkids",
+        "fileSize": 45628,
+        "status": 1,
+        "language": "uk",
+        "authors": [
+            "proproektor195-create"
+        ],
+        "tvTypes": [
+            "Cartoon",
+            "Movie",
+            "TvSeries"
+        ],
+        "version": 30,
+        "internalName": "UAFlixProvider",
+        "description": "UAFlix Kids: \u043c\u0443\u043b\u044c\u0442\u0444\u0456\u043b\u044c\u043c\u0438, \u043c\u0443\u043b\u044c\u0442\u0441\u0435\u0440\u0456\u0430\u043b\u0438 \u0442\u0430 \u0432\u0438\u0431\u0440\u0430\u043d\u0456 YouTube-\u043a\u0430\u043d\u0430\u043b\u0438",
+        "url": "https://raw.githubusercontent.com/proproektor195-create/uaflixkids/builds/UAFlixProvider.cs3",
+        "name": "UAFlixProvider"
+    }
+]
