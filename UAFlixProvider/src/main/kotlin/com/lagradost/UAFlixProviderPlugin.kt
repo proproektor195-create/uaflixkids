@@ -6,7 +6,6 @@ import android.text.InputType
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ScrollView
-import com.lagradost.cloudstream3.AcraApplication.Companion.getActivity
 import com.lagradost.cloudstream3.plugins.CloudstreamPlugin
 import com.lagradost.cloudstream3.plugins.Plugin
 
@@ -21,17 +20,12 @@ class UAFlixProviderPlugin : Plugin() {
             )
         )
 
-        openSettings = settings@{
+        openSettings = {
 
-            val activity =
-                context.getActivity()
-                    ?: return@settings
-
-            val editText = EditText(activity).apply {
-
+            val editText = EditText(context).apply {
                 inputType =
                     InputType.TYPE_CLASS_TEXT or
-                            InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                        InputType.TYPE_TEXT_FLAG_MULTI_LINE
 
                 minLines = 12
 
@@ -40,7 +34,7 @@ class UAFlixProviderPlugin : Plugin() {
 
 Приклади:
 
-Anime Kids | https://www.youtube.com/@animekids
+Малятко TV | https://www.youtube.com/@malyatkotv
 
 Мультфільми | https://www.youtube.com/playlist?list=PLXXXXXXXX
 
@@ -52,28 +46,32 @@ Cartoon UA | https://www.youtube.com/channel/UCXXXXXXXX
                 )
             }
 
-            val container =
-                LinearLayout(activity).apply {
+            val container = LinearLayout(context).apply {
+                orientation = LinearLayout.VERTICAL
 
-                    orientation =
-                        LinearLayout.VERTICAL
+                val padding = 32
 
-                    addView(editText)
-                }
+                setPadding(
+                    padding,
+                    padding,
+                    padding,
+                    padding
+                )
 
-            val scroll =
-                ScrollView(activity).apply {
+                addView(editText)
+            }
 
-                    addView(container)
-                }
+            val scroll = ScrollView(context).apply {
+                addView(container)
+            }
 
-            AlertDialog.Builder(activity)
-                .setTitle("YouTube канали")
+            AlertDialog.Builder(context)
+                .setTitle("YouTube-канали")
                 .setMessage(
                     """
-Додайте власні канали або плейлисти.
+Додайте власні YouTube-канали або плейлисти.
 
-Кожен запис в окремому рядку:
+Кожен запис потрібно додавати з нового рядка:
 
 Назва | URL
                     """.trimIndent()
@@ -86,7 +84,10 @@ Cartoon UA | https://www.youtube.com/channel/UCXXXXXXXX
                         editText.text.toString()
                     )
                 }
-                .setNegativeButton("Скасувати", null)
+                .setNegativeButton(
+                    "Скасувати",
+                    null
+                )
                 .show()
         }
     }
