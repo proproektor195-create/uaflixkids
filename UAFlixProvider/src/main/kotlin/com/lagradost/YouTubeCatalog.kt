@@ -126,8 +126,13 @@ class YouTubeCatalog(
 
     suspend fun home(
         api: MainAPI,
-        request: MainPageRequest
+        request: MainPageRequest,
+        page: Int
     ): HomePageResponse {
+        if (page > 1) {
+            return newHomePageResponse(request, emptyList(), false)
+        }
+
         val sources = YouTubeSettingsStore.read(context)
 
         val channels: List<SearchResponse> = sources.mapIndexed { index, source ->
@@ -148,7 +153,8 @@ class YouTubeCatalog(
 
         return newHomePageResponse(
             request,
-            channels
+            channels,
+            false
         )
     }
 
