@@ -141,13 +141,16 @@ class YouTubeCatalog(
             }.getOrNull()
 
             with(api) {
-                newTvSeriesSearchResponse(
-                    source.title,
-                    "$YOUTUBE_SOURCE_PREFIX$index",
-                    TvType.TvSeries
-                ) {
-                    posterUrl = poster
-                }
+newTvSeriesSearchResponse(
+    source.title,
+    "$YOUTUBE_SOURCE_PREFIX$index",
+    TvType.TvSeries,
+    fix = false
+) {
+    posterUrl = poster
+}
+
+
             }
         }
 
@@ -169,15 +172,21 @@ class YouTubeCatalog(
             ?: throw IllegalArgumentException("YouTube-канал не знайдено")
 
         val videos = loadFeed(source)
-        val episodes: List<Episode> = videos.mapIndexed { position, video ->
-            with(api) {
-                newEpisode("$YOUTUBE_PLAY_PREFIX${video.id}") {
-                    name = video.title
-                    episode = position + 1
-                    posterUrl = video.thumbnail
-                }
+        val episodes: List<Episode> =
+    videos.mapIndexed { position, video ->
+
+        with(api) {
+            newEpisode(
+                "$YOUTUBE_PLAY_PREFIX${video.id}",
+                fix = false
+            ) {
+                name = video.title
+                episode = position + 1
+                posterUrl = video.thumbnail
             }
         }
+    }
+
 
         return with(api) {
             newTvSeriesLoadResponse(
